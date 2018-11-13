@@ -1,9 +1,9 @@
 package hernanszel.junkMaker;
 
+import hernanszel.junkMaker.analyzer.BasicClassAnalyzer;
 import hernanszel.junkMaker.analyzer.ClassAnalyzer;
 import hernanszel.junkMaker.analyzer.FieldInfo;
-import hernanszel.junkMaker.analyzer.PrimitiveClassAnalyzer;
-import hernanszel.junkMaker.generator.PrimitivesGenerator;
+import hernanszel.junkMaker.generator.BasicGenerator;
 import hernanszel.junkMaker.generator.ValueGenerator;
 import hernanszel.junkMaker.injector.BasicClassInjector;
 import hernanszel.junkMaker.injector.ClassInjector;
@@ -12,12 +12,14 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.List;
 import java.util.function.Function;
 
+import static hernanszel.junkMaker.utils.Utils.generateNewInstance;
+
 public class JunkMaker {
 
     private final Function<Class<?>, ?> pipeline = injectJunk(generateJunk(extractFieldInfo()));
 
-    private final ClassAnalyzer defaultClassAnalyzer = new PrimitiveClassAnalyzer();
-    private final ValueGenerator defaultPrimitivesGenerator = new PrimitivesGenerator();
+    private final ClassAnalyzer defaultClassAnalyzer = new BasicClassAnalyzer();
+    private final ValueGenerator defaultPrimitivesGenerator = new BasicGenerator();
     private final ClassInjector defaultInjector = new BasicClassInjector();
 
     private ClassAnalyzer classAnalyzer = defaultClassAnalyzer;
@@ -31,15 +33,15 @@ public class JunkMaker {
         return this._generateJunkFor(clazz);
     }
 
-    public void with(ClassAnalyzer classAnalyzer) {
+    public void setAnalyzer(ClassAnalyzer classAnalyzer) {
         this.classAnalyzer = classAnalyzer;
     }
 
-    public void with(ValueGenerator valueGenerator) {
+    public void withGenerator(ValueGenerator valueGenerator) {
         this.valueGenerator = valueGenerator;
     }
 
-    public void with(ClassInjector injector) {
+    public void withInjector(ClassInjector injector) {
         this.valueInjector = injector;
     }
 
@@ -89,23 +91,10 @@ public class JunkMaker {
         Pair<Class<?>, List<FieldInfo>> clazzAndFields = clazzAnalyzer.apply(clazz);
 
         clazzAndFields.getRight().stream().forEach(fieldInfo -> {
-            Object generatedValue = valueGenerator.generateValue(fieldInfo.classType);
-            System.out.println("Generated: "+generatedValue.toString());
-            fieldInfo.value = generatedValue;
+            fieldInfo.value = valueGenerator.generateValue(fieldInfo.classType);
         });
 
         return clazzAndFields;
-    }
-
-    /*******************
-     *     HELPER
-     *******************/
-    private <T> T generateNewInstance(Class<T> clazz) throws InstantiationException {
-        try {
-            return clazz.newInstance();
-        } catch (Throwable e) {
-            throw new InstantiationException(String.format("Can not instantiate object %s", clazz.getSimpleName()));
-        }
     }
 
 }

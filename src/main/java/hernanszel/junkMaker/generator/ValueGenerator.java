@@ -2,6 +2,6 @@ package hernanszel.junkMaker.generator;
 
 public interface ValueGenerator {
 
-    <T> T generateValue(Class<T> type);
+    <T> T generateValue(Class<T> typeOfTarget);
 
 }

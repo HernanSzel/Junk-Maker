@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 import static java.lang.Boolean.TRUE;
 
-public class PrimitiveClassAnalyzer implements ClassAnalyzer {
+public class BasicClassAnalyzer implements ClassAnalyzer {
 
     @Override
     public <T> List<FieldInfo> getClassAndSuperClassesFieldInfo(Class<T> clazz) {

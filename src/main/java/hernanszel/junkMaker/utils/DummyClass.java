@@ -13,9 +13,14 @@ public class DummyClass extends SuperDummyClass {
     private char dummyChar;
     private String dummyString;
     private boolean dummyBoolean;
+    private DummyInnerClass innerClass;
 
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
+    }
+
+    public DummyInnerClass getInnerClass() {
+        return innerClass;
     }
 }

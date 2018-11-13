@@ -10,8 +10,7 @@ public class Main {
         DummyClass junk = junkMaker.generateJunkFor(DummyClass.class);
 
         System.out.println(junk.toString());
-
-        return;
+        System.out.println("Inner -> "+junk.getInnerClass().toString());
     }
 
 }
